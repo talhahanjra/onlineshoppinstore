@@ -1,0 +1,63 @@
+﻿@{
+    Layout="~/Sharred/AdminLayout.cshtml";
+    var UserName="";
+    var Password="";
+    var Message="";
+      Validation.RequireField("txtUserName", "User  Name is required");
+   Validation.RequireField("txtPassword", "Password  is required");
+  
+    var db=Database.Open("EShop");
+ 
+   
+    if(IsPost)
+    {
+        if(Validation.IsValid())
+        {
+            UserName=Request["txtUserName"];
+            Password=Request["txtPassword"];
+            Message="Welcome";
+            if(WebSecurity.Login(UserName, Password))
+                {
+                Response.Redirect("~/default.cshtml");
+                }
+                else{
+                    
+                    Message="Wrong User Name or Password";
+                }
+       
+      }
+    }
+}
+
+
+
+  <div class="span8">
+       <h1>Login</h1>
+      <form class="form-horizontal" method="post" action="SignIn.cshtml">
+           
+         <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">User Name</label>
+                                <div class="controls">
+                                     <input type="text" name="txtUserName"/>
+                                    <span class="help-inline" style="color: #f00">@Html.ValidationMessage("txtUserName")</span>
+                                </div>
+          </div>
+          <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Password</label>
+                                <div class="controls">
+                                     <input type="password" name="txtPassword"/>
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtPassword")</span>
+                                </div>
+          </div>
+           <div class="control-group">
+                 <label class="control-label" for="txtProdDesc">@Message</label>                             
+           </div>
+           <div class="control-group">
+                            <div class="controls">
+                                     <input type="submit" class="btn btn-large btn-primary" name="btnSubmit"/>  
+                                    <input type="button" class="btn btn-large" name="btnSubmit" value="Cancel"/>                             
+                            </div>
+           </div>
+      </form>
+     
+  </div>

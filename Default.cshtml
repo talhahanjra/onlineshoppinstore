@@ -1,0 +1,26 @@
+﻿@{
+    
+    Layout="~/Sharred/MasterPageLayout.cshtml";
+    PageData["title"]="E-Shop>Home";
+  
+    //Db 
+    var db=Database.Open("EShop");
+    // var db = Database.Open("DataExample");
+     var sqlCommand = "SELECT * FROM tbl_Products";
+
+     var PT="Home"; 
+
+     
+       foreach (var row in db.Query(sqlCommand))
+            {
+              
+                  @ProductsInfo.productInfo(@row.Prod_Id,@row.Prod_Description,@row.Prod_Name,@row.Prod_Price);
+
+            }
+        
+         
+         
+      
+
+ }
+

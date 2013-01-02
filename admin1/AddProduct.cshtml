@@ -1,0 +1,124 @@
+﻿@{
+ Layout="~/Sharred/AdminLayout.cshtml";
+      
+Page.Title = "Edit Category";
+var productId = "new";
+var title = "";
+var price = "";
+var description = "";
+var quantity="";
+var category = "";
+var db = Database.Open("EShop");
+// Retrieve product details associated to the Product ID passed in the URL
+if (!UrlData[0].IsEmpty())
+{
+productId = UrlData[0];
+var sqlCommand = "SELECT * FROM tbl_Products WHERE Prod_Id = @0";
+var product = db.QuerySingle(sqlCommand, productId);
+title = product.Prod_Name;
+price = product.Prod_Price.ToString();
+description = product.Prod_Desc;
+quantity=product.Prod_Quantity.ToString();
+category = product.Cat_Id.ToString();
+}
+if(IsPost)
+{
+productId = Request["productId"];
+title = Request["title"];
+price = Request["price"];
+description = Request["description"];
+quantity = Request["quantity"];
+category = Request["category"];
+// Validation
+if (title.IsEmpty())
+{
+ModelState.AddError("title", "Product Title cannot be blank");
+}
+if (price.IsEmpty())
+{
+ModelState.AddError("price", "Price is required");
+}
+if (description.IsEmpty())
+{
+ModelState.AddError("description", "Description cannot be blank");
+}
+if (quantity.IsEmpty())
+{
+ModelState.AddError("quantity", "Quantity cannot be blank");
+}
+if(ModelState.IsValid)
+{
+var sql = "";
+if (productId == "new")
+{
+// Insert new product record
+sql = "INSERT INTO tbl_Products (Prod_Name, Prod_Price, Prod_Description, Prod_Quantity, Cat_Id) VALUES (@0, @1, @2, @3, @4)";
+db.Execute(sql, title, price, description, quantity, category, productId);
+productId = db.GetLastInsertId().ToString();
+}
+else
+{
+// Update existing product record
+sql = "UPDATE Products SET Prod_Name = @0, Prod_Price = @1, Prod_Description = @2, Prod_Quantity = @3, Cat_Id = @4 WHERE Prod_Id = @5";
+db.Execute(sql, title, price, description, quantity, category, productId);
+}
+// Product image
+var productImage = WebImage.GetImageFromRequest();
+if(productImage != null)
+{
+// Save main product image
+var savePath = @"~\ProductImages\" + productId;
+productImage.Save(filePath: savePath + ".png",imageFormat: "png",forceCorrectExtension: true );
+// Resize and save thumbnail
+productImage.Resize(height: 120, width: 120, preserveAspectRatio: true);
+productImage.Save(filePath: savePath + "_thumb.png",imageFormat: "png",forceCorrectExtension: true );
+}
+
+}
+}
+}
+<div class="span8">
+    <div class="row" style="margin-left: 10%">
+<h1>Product Details</h1>
+<div>
+<form action="" method="post" enctype="multipart/form-data">
+<div class="controls">
+@Html.Hidden("productId", productId)
+    
+                @Html.Label("Title:", title)
+    
+@Html.TextBox("title", title)
+@Html.ValidationMessage("title")
+</div>
+<p>
+@Html.Label("Price:", price)
+@Html.TextBox("price", price, new { @class="short" })
+@Html.ValidationMessage("price")
+</p>
+<p>
+@Html.Label("Description:", description)
+@Html.TextArea("description", description, 4, 40, null)
+@Html.ValidationMessage("description")
+</p>
+<p>
+@Html.Label("Quantity:", quantity)
+@Html.TextBox("Quantity", quantity)
+</p>
+<p>
+@Html.Label("Category:", category)
+@Products.CategoriesDropDownList("category", category)
+</p>
+<p>
+@Html.Label("Product Image:", "productImage")
+<input type="file" name="productImage" />
+</p>
+<div id="productFormImage">
+@Products.ShowProductImage(productId)
+</div>
+<p>
+<input type="submit" value="Update" class="btn btn-primary" />
+</p>
+</form>
+</div>
+        </div>
+</div>

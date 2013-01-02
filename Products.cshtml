@@ -1,0 +1,59 @@
+﻿@{
+    
+    Layout = "~/Sharred/AdminLayout.cshtml";
+    
+    var categoryTitle = UrlData[0];
+    
+    if (categoryTitle.IsEmpty())
+    {
+        Response.Redirect("/Default");
+    }
+    
+    Page.Title = categoryTitle;
+    
+    var db = Database.Open("EShop");   
+    var sqlSelect = "SELECT Prod_Id, Prod_Name, Prod_Price FROM tbl_Products " +
+                "LEFT OUTER JOIN tbl_Categories ON tbl_Products.Cat_Id = tbl_Categories.Cat_Id " +
+                "WHERE tbl_Categories.Cat_Name = @0";
+    
+    var products = db.Query(sqlSelect, categoryTitle);
+    PageData["title"]="EShop>"+categoryTitle;
+    
+}
+<div class="span8">
+<div id="contentTitle" style="margin: 5%">
+    <h1>@categoryTitle</h1>
+</div>
+
+@if (products.Count() == 0)
+{
+    <h3>
+        No items found in this category. 
+        Try browsing one of the categories listed to the left.
+    </h3>
+}
+else
+{
+    <ul id="productsList">
+        @foreach (var item in products) {
+
+
+            <div class="span2">
+		        <div class="thumbnail">
+		      @Products.ShowProductThumbnail(item.Prod_Id.ToString())
+                  <div class="caption">
+		           <h5 ><a href="/ProductDetails/@item.Prod_Id">@item.Prod_Name</a></h5>
+		          
+                     <p>Price:£@item.Prod_Price</p>
+		            
+                     <p><a href="/ProductDetails/@item.Prod_Id" class="btn btn-primary">
+                        More Details
+                    </a>
+                     </p>
+		         </div>
+		        </div>
+	        </div>      
+        }
+    </ul>
+}
+</div>

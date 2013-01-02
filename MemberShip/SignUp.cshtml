@@ -1,0 +1,81 @@
+﻿@{
+    Layout="~/Sharred/AdminLayout.cshtml";
+    WebSecurity.Logout();
+    var UserExistMessage="";
+    
+    var UserName="";
+    var Password="";
+    var Message="";
+    var RPassword="";
+   
+   Validation.RequireField("txtUserName", "User  Name is required");
+   Validation.RequireField("txtPassword", "Password  is required");
+  Validation.RequireField("txtRPassword", "Retype Password");
+  
+    var db=Database.Open("EShop");
+ 
+   
+    if(IsPost)
+    {
+        if(Validation.IsValid())
+        {
+            UserName=Request["txtUserName"];
+            Password=Request["txtPassword"];
+           
+            RPassword=Request["txtRPassword"];
+            Message="Welcome";
+       
+      }
+      if(WebSecurity.UserExists(UserName))
+        {
+            UserExistMessage="This User Name Already Exist";
+        }
+        WebSecurity.CreateUserAndAccount(UserName, Password, null, false);
+            WebSecurity.Login(UserName, Password);
+            Response.Redirect("~/default");
+    }
+}
+
+
+
+  <div class="span8">
+       <h1>Sign Up</h1>
+      <div class="control-group">
+                 <label class="control-label" for="txtProdDesc">@Message</label>                             
+           </div>
+      <form class="form-horizontal" method="post" action="SignUp.cshtml">
+           
+         <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">User Name</label>
+                                <div class="controls">
+                                     <input type="text" name="txtUserName"/>
+                                    <span class="help-inline" style="color: #f00">@Html.ValidationMessage("txtUserName")</span>
+                                </div>
+          </div>
+          
+          <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Password</label>
+                                <div class="controls">
+                                     <input type="password" name="txtPassword"/>
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtPassword")</span>
+                                </div>
+          </div>
+           <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Retype Password</label>
+                                <div class="controls">
+                                     <input type="password" name="txtRPassword"/>
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtRPassword")</span>
+                                </div>
+          </div>
+           <div class="control-group">
+                 <label class="control-label" for="txtProdDesc">@Message</label>                             
+           </div>
+           <div class="control-group">
+                            <div class="controls">
+                                     <input type="submit" class="btn btn-large btn-primary" name="btnSubmit" value="Register"/>  
+                                    <input type="button" class="btn btn-large" name="btnSubmit" value="Cancel"/>                             
+                            </div>
+           </div>
+      </form>
+     
+  </div>

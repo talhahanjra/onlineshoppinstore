@@ -1,0 +1,53 @@
+﻿@{
+     Layout="~/Sharred/adminHeaderLayout.cshtml";
+    Page.Title = "Edit Category";
+    
+    var categoryId = !UrlData[0].IsEmpty() ? UrlData[0] : "0";
+    var categoryTitle = "";
+    
+    var db = Database.Open("EShop");
+
+    if(IsPost)
+    {
+        categoryId = Request["categoryId"];
+        categoryTitle = Request["categoryTitle"];
+        
+        // Validation 
+        if (categoryTitle.IsEmpty())
+        {
+            ModelState.AddError("categoryTitle", "Category Title cannot be blank");
+        }
+        
+        if(Admin.CategoryExists(categoryTitle))
+        {
+            ModelState.AddError("categoryTitle", "Category already exists");
+        }
+        
+        if(ModelState.IsValid)
+        {
+            var sqlUpdate = "UPDATE Categories SET Cat_Name = @0 WHERE Cat_Id = @1";
+            db.Execute(sqlUpdate, categoryTitle, categoryId);
+            
+            Response.Redirect("~/Admin/Categories/");
+        }
+    }
+    else
+    {
+            var sqlCommand = "SELECT * FROM tbl_Categories WHERE Cat_Id = @0";
+            categoryTitle = db.QuerySingle(sqlCommand, categoryId).Cat_Name;
+    }
+    
+    
+}
+
+<h1>Edit Category</h1>
+
+<form action="" method="post">
+    <p>
+        Category Title:
+        @Html.Hidden("categoryId", Cat_Id)
+        @Html.TextBox("categoryTitle", Cat_Name)
+        <input type="submit" value="Update" />
+        @Html.ValidationMessage("categoryTitle")
+    </p>
+</form>

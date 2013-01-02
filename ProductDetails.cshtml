@@ -1,0 +1,85 @@
+﻿@{
+    
+    Layout="~/Sharred/AdminLayout.cshtml";
+   Validation.RequireField("txtQuantity", "Quantity name is required");
+   var quantity="";
+
+
+   if(IsPost)
+    {
+        quantity = Request["txtQuantity"];
+ 
+        // Validation
+        if (quantity.IsEmpty()) {
+            ModelState.AddError("txtQuantity", "Quantity cannot be blank.");
+        }
+      }
+
+
+
+
+
+    var productID = !UrlData[0].IsEmpty() ? UrlData[0] : "0";
+    
+    var db = Database.Open("EShop");   
+    var sqlSelect = "SELECT * FROM tbl_Products WHERE Prod_Id = @0";
+    
+    var product = db.QuerySingle(sqlSelect, productID);
+    PageData["title"]="EShop>"+product.Prod_Name;
+    
+}
+
+@if (product == null)
+{
+    <div class="span8">
+    <h3 style="margin: 5%">
+        Unable to fetch product details.
+        Try browsing one of the categories listed to the Right.
+    </h3>
+        </div>
+}
+else
+{
+    
+    //Page.Title = product.title;
+    <text>
+<div class="span8">
+    <div class="row"  style="margin:10%;">
+        <h1>@product.Prod_Name</h1>
+            
+	
+      <h1>
+           
+               Price: $@product.Prod_Price
+        </h1>    
+       <p>     
+            @product.Prod_Description
+       </p>
+
+          @Products.ShowProductImage(product.Prod_Id.ToString())
+        <div id="orderForm">
+            <form action="/Cart" method="post">
+                <fieldset>
+                    <legend>Place Order</legend>
+                    <p>
+                        <label for="Quantity">Quantity</label>
+                        <input type="text" name="txtQuantity" id="txtQuantity" value="1"/>
+                          @Html.ValidationMessage("txtQuantity")
+                    </p>
+                    <p>
+                        @Html.Hidden("productID", productID)
+                        @Html.Hidden("price", product.Prod_Price)
+                        <input type="submit" value="Add to Cart" />
+                    </p>
+                    <span class='st_facebook' displayText='Facebook'></span>
+                    <span class='st_twitter' displayText='Tweet'></span>
+                    <span class='st_googleplus' displayText='Google +'></span>
+                    <span class='st_linkedin' displayText='LinkedIn'></span>
+                    <span class='st_fblike' displayText='Facebook Like'></span>
+                </fieldset>
+            </form>
+          </div>  
+        </div>
+    </div>
+    </text>
+}

@@ -1,0 +1,56 @@
+﻿@{
+    Layout="~/Sharred/AdminLayout.cshtml";
+    var CatName="";
+    var CatDesc="";
+    var Message="";
+    Validation.RequireField("txtCatName", "Categoery  Name is required");
+   Validation.RequireField("txtCatDesc", "Categoery  Description is required");
+  
+    var db=Database.Open("EShop");
+    var query="insert into tbl_Categories (Cat_Name,Cat_Description) values (@0,@1)";
+   
+    if(IsPost)
+    {
+        if(Validation.IsValid()){
+        CatName=Request["txtCatName"];
+        CatDesc=Request["txtCatDesc"];
+        Message="New Categoery Added ";
+        db.Execute(query,CatName,CatDesc);
+      }
+    }
+   
+    
+   
+}
+
+  <div class="span8">
+       <h1>Add New Categoery</h1>
+      <form class="form-horizontal" method="post" action="AddNewCategoery.cshtml">
+           
+
+         <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Categoery Name</label>
+                                <div class="controls">
+                                     <input type="text" name="txtCatName"/>
+                                    <span class="help-inline" style="color: #f00">@Html.ValidationMessage("txtCatName")</span>
+                                </div>
+          </div>
+          <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Categoery Description</label>
+                                <div class="controls">
+                                     <input type="text" name="txtCatDesc"/>
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtCatDesc")</span>
+                                </div>
+          </div>
+           <div class="control-group">
+                 <label class="control-label" for="txtProdDesc">@Message</label>                             
+           </div>
+           <div class="control-group">
+                            <div class="controls">
+                                     <input type="submit" class="btn btn-large btn-primary" name="btnSubmit"/>  
+                                    <input type="button" class="btn btn-large" name="btnSubmit" value="Cancel"/>                             
+                            </div>
+           </div>
+      </form>
+     
+  </div>

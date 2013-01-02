@@ -1,0 +1,74 @@
+﻿@{
+  //  Response.Cookies["Name"].Value="talha";
+    //Response.Cookies["Name"].Expires=DateTime.Now.AddMinutes(1);
+  //  string s=Request.Cookies["Name"].Value;
+  //  @s;
+    
+}
+<script src="~/js/jquery.js"></script>
+<script>
+
+    //alert(document.xmlVersion)
+    //alert()
+    //alert(navigator.appName)
+    //alert(history.forward);
+    // A car "class"
+    $(document).ready(function () {
+
+        $('#s').hide(function(){return 5000;}).show().slideUp(2000).slideDown(2000).fadeOut(2000).fadeIn(2000);
+    })
+    function Car(model, year, miles) {
+
+        this.model = model;
+        this.year = year;
+        this.miles = miles;
+
+    }
+
+
+    // Note here that we are using Object.prototype.newMethod rather than 
+    // Object.prototype so as to avoid redefining the prototype object
+    Car.prototype.toString = function () {
+        return this.model + " has done " + this.miles + " miles";
+    };
+
+    // Usage:
+
+    var civic = new Car("Honda Civic", 2009, 20000);
+    var mondeo = new Car("Ford Mondeo", 2010, 5000);
+
+    console.log(civic.toString());
+    console.log(mondeo.toString());
+
+</script>
+@{
+    Validation.RequireField("dateOfBirth","Prup");
+    if(IsPost){
+        
+        if(Validation.IsValid())
+        {
+            var s=Request["dateOfBirth"];
+
+        }
+    }    
+
+}
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <form method="post" action="">
+                @Html.ValidationMessage("dateOfBirth")
+        
+            @Html.Label("Date of Birth: ", "dateOfBirth")
+            @Html.TextBox("dateOfBirth")
+            <input type="submit"/>
+        </form>
+
+        <div id="s" style="background-color: #b6ff00;width: 100px;height: 100px">fdsfds</div>
+    </body>
+</html>

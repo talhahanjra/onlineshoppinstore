@@ -1,0 +1,97 @@
+﻿@{
+        Layout="~/Sharred/AdminLayout.cshtml";
+        //Validation
+
+         Validation.RequireField("txtProductName", "Product  Name is required");
+         Validation.RequireField("txtProdDesc", "Product  Description is required");
+         Validation.RequireField("txtProductPrice", "Product  Price is required");
+          var catMessage="";
+        
+         var ProdName="";
+         var ProdDesc="";
+         var ProdPrice="";
+         var ProdImgPath="";
+         var CatId="";
+        //End Validation
+
+        var Message="";
+       
+        Database db=Database.Open("EShop");
+        var sqlCommand="select *From tbl_Categories";//Selects Data Of all Categories
+        var query="insert into tbl_Products (Prod_Name,Prod_Description,Prod_Img_Path,Prod_Price,Cat_Id) values (@0,@1,@2,@3,@4)";
+
+        if(IsPost){
+            
+                    if(Validation.IsValid()){
+                                
+                                         Message="New Product Added";
+                                         ProdName=Request["txtProductName"];
+                                         ProdDesc=Request["txtProdDesc"];
+                                         ProdPrice=Request["txtProductPrice"];
+                                         CatId="1";
+                                         db.Execute(query,ProdName,ProdDesc,ProdImgPath,ProdPrice,CatId);
+
+
+                    }
+        }
+   
+    } 
+
+<div class="span8">
+       <h1>Add New Product</h1>
+      <form class="form-horizontal" method="post" action="">
+           
+          <div class="control-group">
+                                <label class="control-label" for="inputEmail">Categoery</label>
+                                <div class="controls">
+                                    <select id="ddlCat" name="ddlCat" class="dropdown" placeholder="Select Categoery">
+                                    <option selected="1" value="-1">Select Categoery</option>
+                                        @{
+                                            foreach (var row in db.Query(sqlCommand)){
+                                                       <option value="@row.Cat_Id">@row.Cat_Name</option>
+                                            }
+                                       }
+                                    </select>
+                                    <span class="help-inline">@catMessage</span>
+                                </div>
+                              </div>
+         <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Product Name</label>
+                                <div class="controls">
+                                    @Html.TextBox("txtProductName")
+                                    <span class="help-inline" style="color: #f00">@Html.ValidationMessage("txtProductName")</span>
+                                </div>
+          </div>
+          <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Product Description</label>
+                                <div class="controls">
+                                    @Html.TextBox("txtProdDesc")
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtProdDesc")</span>
+                                </div>
+          </div>
+          <div class="control-group">
+                               <label class="control-label" for="txtProdDesc">Product Price</label>
+                                <div class="controls">
+                                    @Html.TextBox("txtProductPrice")
+                                    <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtProductPrice")</span>
+                                </div>
+          </div>
+           <div class="control-group">
+                               <label class="control-label" for="Image">Image Upload</label>
+                                <div class="controls">
+                                  
+                                     <span class="help-inline"  style="color: #f00">@Html.ValidationMessage("txtProductPrice")</span>                            
+                                 </div>
+           </div>
+           <div class="control-group">
+                 <label class="control-label">@Message</label>                             
+           </div>
+           <div class="control-group">
+                            <div class="controls">
+                                     <input type="submit" class="btn btn-large btn-primary" name="btnSubmit"/>  
+                                    <input type="button" class="btn btn-large" name="btnSubmit" value="Cancel"/>                             
+                            </div>
+           </div>
+      </form>
+     
+  </div>

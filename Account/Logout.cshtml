@@ -1,0 +1,13 @@
+﻿@{
+    
+    Layout="~/Sharred/AdminLayout.cshtml";
+    Page.Title = "Log Out";
+    
+    WebSecurity.Logout();
+    
+ }
+<div class="span8">
+<h1>Log Out</h1>
+<p>You have been logged out.Thanks For Visting Our Site</p>
+<p><a href="@Href("~/Default")">Return to home page</a></p> 
+</div>

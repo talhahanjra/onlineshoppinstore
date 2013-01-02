@@ -1,0 +1,62 @@
+﻿@{
+    var db = Database.Open("EShop");
+    var sqlSelect = "SELECT * FROM tbl_Categories;";
+}
+
+
+
+
+
+ 
+
+
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+
+      .post {
+        padding: 15px 0px;
+        border-bottom: 1px dotted #ccc;
+      }
+
+      img {
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;         /* Opera/IE 8+ */
+      }
+
+      .widget h3 { display: block; background: #212121; color: #f1f1f1; text-transform: capitalize; border-radius: 5px; margin-bottom: 10px; text-align: center; padding: 5px 0px;}
+
+      .feat-img img { padding: 5px; border: 1px solid #ccc;}
+
+      .post:first-of-type { padding-top: 0px;}
+      .widget ul { margin-left: 0px;}
+      .widget ul li { list-style: none; font-size: 14px;}
+      .widget ul li a { display: block; padding: 5px 0px; color: #888; border-top: 1px dotted #ccc;}
+      .widget ul li a:hover { background: #fff; text-decoration: none; padding-left: 5px;}
+    </style>
+
+ <aside class="span4">
+            
+            <div class="row">
+              
+         
+
+            <div class="widget span4">
+              <h3>Categories</h3>
+
+              <ul>
+         @foreach (var category in db.Query(sqlSelect))
+                {
+                    <li><a href="/Products/@category.Cat_Name">@category.Cat_Name</a></li>
+                }
+              </ul>
+            </div><!-- end widget -->
+
+          
+
+            </div><!-- end widget row -->
+
+          </aside> <!-- end sidebar -->

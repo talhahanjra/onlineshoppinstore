@@ -1,0 +1,94 @@
+﻿@{
+    
+    Layout="~/Sharred/AdminLayout.cshtml";
+    Page.Title = "Cart";
+    PageData["title"]="EShop>Cart";
+
+
+    
+    
+    // Create a blank cart in Session if not present
+    if (Session["cart"] == null)
+    {
+        Session["cart"] = new Cart();
+    }
+    
+    // Get current cart from Session
+    Cart cart = (Cart)Session["cart"];
+    
+    if (IsPost)
+    {
+        if (Request["productID"] != null)
+        {
+            // Form posted from Product Details Page
+            var productID = Request["productID"];
+            var size = Request["txtQuantity"];
+            var price = Request["price"];
+        
+            cart.AddItem(productID.AsInt(), size, price.AsDecimal());
+        }
+        else if (Request["removeIndex"] != null)
+        {
+            // Form posted by Cart Remove Item button
+            var removeIndex = Request["removeIndex"].AsInt();
+            cart.RemoveItem(removeIndex);
+        }
+    }
+    
+}
+<div class="span8">
+
+<h1 style="margin-top:5% ">Shopping Cart</h1>
+
+@if(cart.Items.Count() == 0)
+{
+    <p>There are no items in your shopping cart.</p>
+}
+else
+{
+    <text>    
+    
+        <table id="cartTable" class="table">
+            <tr>
+                <th class="product">Product</th>
+                <th class="size">Quantity</th>
+                <th class="price">Price</th>
+                <th>&nbsp;</th>
+            </tr>
+            
+            @{  
+                // Declare and initialise index variable, i
+                int i = 0;
+            }
+            
+            @foreach (var item in cart.Items)
+            {
+                <tr>
+                    <td class="product">@Products.GetProductNameFromId(item.ProductID)</td>
+                    <td class="size">@item.Size</td>
+                    <td class="price">£@item.Price</td>
+                    <td class="remove">
+                        <form action="Cart" method="post">
+                            @Html.Hidden("removeIndex", i)
+                            <input type="submit" value="Remove" class="btn" />
+                        </form>
+                    </td>
+                </tr>
+            
+                // increment index
+                i++;
+            }
+            
+            <tr class="cartTotal">
+                <td colspan="2">&nbsp;</td>
+                <td>Total: £@cart.TotalValue</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        <div id="cartButtons">
+            <a href="/Default" class="btn  btn-primary ">Continue Shopping</a>   
+            <a href="/CheckOut" class="btn  btn-primary ">Proceed to Checkout</a>    
+        </div>
+    </text>
+}
+</div>
